@@ -303,3 +303,10 @@ ACTIVITY_ALGORITHM=hybrid       # or lstm, c3d, rule_based
 ## 📜 License
 
 This project is built as a technical assessment prototype. Not licensed for production use.
+ 
+ # #   D a s h b o a r d   P r e v i e w  
+ ! [ E q u i p m e n t   M o n i t o r i n g   D a s h b o a r d ] ( a s s e t s / d a s h b o a r d . p n g )  
+  
+ # #   D a t a s e t  
+ T h e   c u s t o m   Y O L O   m o d e l   w a s   t r a i n e d   u s i n g   t h e   d a t a s e t   a v a i l a b l e   o n   R o b o f l o w :   [ A C I D S   M i n i   D a t a s e t ] ( h t t p s : / / u n i v e r s e . r o b o f l o w . c o m / e m m a - l i n / a c i d s - m i n i / d a t a s e t / 3 )  
+ 
