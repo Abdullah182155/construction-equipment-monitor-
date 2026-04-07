@@ -1,0 +1,28 @@
+# API + Frontend Service — FastAPI + WebSocket + Static Files
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# System dependencies for OpenCV (needed for frame encoding)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Application code
+COPY config/ config/
+COPY cv_service/ cv_service/
+COPY kafka_service/ kafka_service/
+COPY db_service/ db_service/
+COPY api_service/ api_service/
+COPY frontend/ frontend/
+COPY scripts/ scripts/
+COPY .env .env
+
+EXPOSE 8000
+
+CMD ["python", "scripts/run_demo.py"]

@@ -1,0 +1,33 @@
+# ============================================
+# Equipment Monitoring System - Dependencies
+# ============================================
+
+# Core
+python-dotenv>=1.0.0
+numpy>=1.24.0
+
+# Computer Vision
+opencv-python-headless>=4.8.0
+ultralytics>=8.0.0
+supervision>=0.18.0
+
+# Deep Learning (LSTM + C3D)
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Kafka
+kafka-python>=2.0.2
+
+# Database
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+
+# API Server
+fastapi>=0.104.0
+python-multipart>=0.0.6
+uvicorn[standard]>=0.24.0
+websockets>=12.0
+
+# Utilities
+Pillow>=10.0.0
+yt-dlp>=2024.0.0

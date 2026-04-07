@@ -1,0 +1,54 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Virtual environment (Conda)
+.conda
+.condarc
+
+# Machine Learning models & data
+*.pt
+*.pth
+*.onnx
+data/
+datasets/
+models/
+weights/
+runs/
+
+# Video uploads & sample data
+data/uploads/
+data/sample_video/
+*.mp4
+*.avi
+*.mkv
+*.mov
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints
+
+# Logs
+logs/
+*.log
+
+# IDEs & Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/

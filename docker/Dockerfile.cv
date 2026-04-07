@@ -1,0 +1,26 @@
+# CV Service — Detection + Tracking + Motion + Classification
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# System dependencies for OpenCV
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Application code
+COPY config/ config/
+COPY cv_service/ cv_service/
+COPY kafka_service/ kafka_service/
+COPY scripts/ scripts/
+COPY .env .env
+
+CMD ["python", "scripts/run_cv_pipeline.py"]

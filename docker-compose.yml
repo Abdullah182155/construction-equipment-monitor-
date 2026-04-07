@@ -1,0 +1,129 @@
+# ============================================
+# Docker Compose — Equipment Monitoring System
+# ============================================
+# Includes: Zookeeper, Kafka, PostgreSQL, CV Service, Consumer, API+Frontend
+
+version: '3.8'
+
+services:
+  # ---- Infrastructure ----
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: eq-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: eq-kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: eq-postgres
+    environment:
+      POSTGRES_USER: equipment
+      POSTGRES_PASSWORD: equipment123
+      POSTGRES_DB: equipment_monitoring
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U equipment -d equipment_monitoring"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---- Application Services ----
+
+  cv-service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cv
+    container_name: eq-cv-service
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      VIDEO_SOURCE: data/sample_video/excavator_demo.mp4
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      MOTION_ALGORITHM: optical_flow
+      ACTIVITY_ALGORITHM: hybrid
+      LOG_LEVEL: INFO
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  consumer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.consumer
+    container_name: eq-consumer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      DATABASE_URL: postgresql://equipment:equipment123@postgres:5432/equipment_monitoring
+      LOG_LEVEL: INFO
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: eq-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://equipment:equipment123@postgres:5432/equipment_monitoring
+      VIDEO_SOURCE: data/sample_video/excavator_demo.mp4
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      LOG_LEVEL: INFO
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+volumes:
+  zookeeper_data:
+  kafka_data:
+  postgres_data:

@@ -1,0 +1,21 @@
+# Consumer Service — Kafka Consumer + Database Writer
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Python dependencies (subset)
+COPY requirements.txt .
+RUN pip install --no-cache-dir \
+    python-dotenv \
+    kafka-python \
+    sqlalchemy \
+    psycopg2-binary
+
+# Application code
+COPY config/ config/
+COPY kafka_service/ kafka_service/
+COPY db_service/ db_service/
+COPY scripts/ scripts/
+COPY .env .env
+
+CMD ["python", "scripts/run_consumer.py"]
