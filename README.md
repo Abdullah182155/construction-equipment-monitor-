@@ -303,9 +303,16 @@ ACTIVITY_ALGORITHM=hybrid       # or lstm, c3d, rule_based
 ## 📜 License
 
 This project is built as a technical assessment prototype. Not licensed for production use.
-
-## Dashboard Preview
-![Equipment Monitoring Dashboard](assets/dashboard.png)
-
-## Dataset
-The custom YOLO model was trained using the dataset available on Roboflow: [ACIDS Mini Dataset](https://universe.roboflow.com/emma-lin/acids-mini/dataset/3)
+
+
+## Dashboard Preview
+
+![Equipment Monitoring Dashboard](assets/dashboard.png)
+<img width="1502" height="861" alt="Screenshot 2026-04-07 183753" src="https://github.com/user-attachments/assets/f9a42bcd-1ee9-45fc-af0a-4a456a4a39c7" />
+
+
+
+## Dataset
+
+The custom YOLO model was trained using the dataset available on Roboflow: [ACIDS Mini Dataset](https://universe.roboflow.com/emma-lin/acids-mini/dataset/3)
+
